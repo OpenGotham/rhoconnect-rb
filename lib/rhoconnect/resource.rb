@@ -117,8 +117,12 @@ module Rhoconnect
           after_create :rhoconnect_create
           after_destroy :rhoconnect_destroy
           after_update :rhoconnect_update
+        elsif is_mongoid?
+          after_create :rhoconnect_create
+          after_destroy :rhoconnect_destroy
+          after_update :rhoconnect_update
         else
-          raise "Rhoconnect::Resource only supports ActiveRecord or DataMapper at this time."
+          raise "Rhoconnect::Resource only supports ActiveRecord, DataMapper, & Mongoid at this time."
         end
       end
       
@@ -134,6 +138,10 @@ module Rhoconnect
       
       def is_activerecord? # :nodoc:
         self.superclass == ActiveRecord::Base rescue false
+      end
+
+      def is_mongoid? 
+        self.included_modules.include?(Mongoid::Document) rescue false
       end
     end
   end
